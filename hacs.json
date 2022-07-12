@@ -1,0 +1,6 @@
+{
+    "name": "Heweather",
+    "country": "CN",
+    "domains": ["weather"],
+    "render_readme": true
+}
