@@ -331,6 +331,7 @@ class HeWeather(WeatherEntity):
                 data_dict = {
                     ATTR_FORECAST_TIME: self._hourly_forecast_data[i]["fxTime"],
                     ATTR_FORECAST_CONDITION: CONDITION_MAP[self._hourly_forecast_data[i]["icon"]],
+                    ATTR_FORECAST_PRECIPITATION: float(self._hourly_forecast_data[i]["precip"]),    # 降水量
                     ATTR_FORECAST_PRECIPITATION_PROBABILITY: float(self._hourly_forecast_data[i]["pop"]),  # 降水概率
                     ATTR_FORECAST_TEMP: float(self._hourly_forecast_data[i]["temp"])
                 }
