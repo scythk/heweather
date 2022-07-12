@@ -5,7 +5,7 @@ from homeassistant.components.weather import (
     WeatherEntity, ATTR_FORECAST_CONDITION, ATTR_FORECAST_PRECIPITATION, 
     ATTR_FORECAST_TEMP, ATTR_FORECAST_TEMP_LOW, ATTR_FORECAST_TIME, ATTR_FORECAST_WIND_BEARING, ATTR_FORECAST_WIND_SPEED)
 
-#https://github.com/home-assistant/home-assistant/blob/dev/homeassistant/const.py
+#https://github.com/home-assistant/home-assistant/blob/dev/homeassistant/const.py https://developers.home-assistant.io/docs/core/entity/weather#recommended-values-for-state-and-condition
 from homeassistant.const import (TEMP_CELSIUS, TEMP_FAHRENHEIT, CONF_API_KEY, CONF_REGION, CONF_NAME)
 
 import requests
@@ -13,7 +13,7 @@ import json
 import logging
 import asyncio
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 DOMAIN = 'heweather'
 
 '''超过ha自定weather属性的额外数据，需要额外注册'''
@@ -35,8 +35,8 @@ ATTR_FORECAST_MOON_SET = "moon_set"      #月落时间
 ATTR_FORECAST_MOON_PHASE = "moon_phase"  #月相
 
 ATTR_FORECAST_PRECIPITATION_PROBABILITY = "precipitation_probability"
-# mapping state, why? because
-# https://developers.home-assistant.io/docs/core/entity/weather#recommended-values-for-state-and-condition
+# mapping state, https://developers.home-assistant.io/docs/core/entity/weather#recommended-values-for-state-and-condition why? because
+#
 # https://dev.heweather.com/docs/refer/condition
 # 和风天气状态多，ha状态少，需要多对一
 CONDITION_MAP = {
@@ -47,7 +47,9 @@ CONDITION_MAP = {
     '104': 'cloudy',    #阴
     
     '150': 'clear-night', #夜晚晴
-    '153': 'partlycloudy', #夜晚多云
+    '151': 'partlycloudy', #夜晚多云
+    '152': 'partlycloudy', #夜晚少云
+    '153': 'partlycloudy', #夜晚晴间多云
     '154': 'cloudy', #夜晚阴
 
     '300': 'rainy',  #阵雨
@@ -69,9 +71,9 @@ CONDITION_MAP = {
     '316': 'pouring',  #大到暴雨
     '317': 'pouring',  #暴雨到大暴雨
     '318': 'pouring',  #大暴雨到特大暴雨
+    '350': 'rainy',  #夜晚阵雨
+    '351': 'rainy',  #夜晚强阵雨
     '399': 'rainy',  #雨
-    '350': 'rainy',  #阵雨
-    '351': 'rainy',  #强阵雨
 
     '400': 'snowy',  #小雪
     '401': 'snowy',  #中雪
@@ -84,9 +86,9 @@ CONDITION_MAP = {
     '408': 'snowy',  # 小到中雪
     '409': 'snowy',  # 中到大雪
     '410': 'snowy',  # 大到暴雪
+    '456': 'snowy-rainy',  # 夜晚阵雨夹雪
+    '457': 'snowy',  # 夜晚阵雪
     '499': 'snowy',  # 雪
-    '456': 'snowy-rainy',  #阵雨夹雪
-    '457': 'snowy',  # 阵雪
 
     '500': 'fog',  # 薄雾
     '501': 'fog',  # 雾
@@ -102,6 +104,15 @@ CONDITION_MAP = {
     '513': 'hail',  # 严重霾
     '514': 'fog',  # 大雾
     '515': 'hail',  # 特强浓雾
+    
+    '800': 'exceptional',  # 新月
+    '801': 'exceptional',  # 蛾眉月
+    '802': 'exceptional',  # 上弦月
+    '803': 'exceptional',  # 盈凸月
+    '804': 'exceptional',  # 满月
+    '805': 'exceptional',  # 亏凸月
+    '806': 'exceptional',  # 下弦月
+    '807': 'exceptional',  # 残月
 
     '900': 'exceptional',  # 热
     '901': 'exceptional',  # 冷
@@ -115,7 +126,7 @@ _LOGGER = logging.getLogger(__name__)
 def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     _LOGGER.info("async_setup_platform sensor HeWeather")
     async_add_devices([HeWeather(api_key=config.get(CONF_API_KEY),
-                            region=config.get(CONF_REGION, '101210201'),  #默认为湖州
+                            region=config.get(CONF_REGION, '101010100'),  #默认为北京
                             name=config.get(CONF_NAME, '和风天气'))], True)
 
 #基类 https://raw.githubusercontent.com/home-assistant/core/dev/homeassistant/components/weather/__init__.py
