@@ -1,7 +1,8 @@
 {
   "domain": "heweather",
   "name": "heweather",
-  "documentation": "https://github.com/aalavender/heweather",
+  "version": "0.2",
+  "documentation": "https://github.com/scythk/heweather",
   "dependencies": [],
   "codeowners": ["@aalavender"],
   "requirements": []
